@@ -1,1 +1,71 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class StudentApp {
+    private static final String DB_URL = "jdbc:mysql://<your-rds-endpoint>:3306/<your-db-name>";
+    private static final String DB_USER = "<your-db-username>";
+    private static final String DB_PASSWORD = "<your-db-password>";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\n==== Student App ====");
+            System.out.println("1. Add Student");
+            System.out.println("2. Display Students");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
+
+            switch (choice) {
+                case 1:
+                    addStudent(scanner);
+                    break;
+                case 2:
+                    displayStudents();
+                    break;
+                case 3:
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+    }
+
+    private static void addStudent(Scanner scanner) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            System.out.print("Enter student name: ");
+            String name = scanner.nextLine();
+            System.out.print("Enter student age: ");
+            int age = scanner.nextInt();
+
+            String sql = "INSERT INTO students (name, age) VALUES (?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setInt(2, age);
+            pstmt.executeUpdate();
+
+            System.out.println("Student added successfully.");
+        } catch (SQLException e) {
+            System.err.println("Error adding student: " + e.getMessage());
+        }
+    }
+
+    private static void displayStudents() {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String sql = "SELECT * FROM students";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            System.out.println("\nID | Name | Age");
+            System.out.println("---------------------");
+            while (rs.next()) {
+                System.out.printf("%d | %s | %d\n", rs.getInt("id"), rs.getString("name"), rs.getInt("age"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error displaying students: " + e.getMessage());
+        }
+    }
+}
 

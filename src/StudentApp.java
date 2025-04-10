@@ -2,9 +2,9 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class StudentApp {
-    private static final String DB_URL = "jdbc:mysql://<your-rds-endpoint>:3306/<your-db-name>";
-    private static final String DB_USER = "<your-db-username>";
-    private static final String DB_PASSWORD = "<your-db-password>";
+    private static final String DB_URL = System.getenv("DB_URL");
+    private static final String DB_USER = System.getenv("DB_USER");
+    private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

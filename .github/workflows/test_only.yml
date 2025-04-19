@@ -48,10 +48,6 @@ jobs:
             sleep 2
           done
 
-      - name: Create schema
-        run: |
-          mysql -h 127.0.0.1 -u testuser -ptestpass studentdb < schema.sql
-
       - name: Compile
         run: javac StudentApp.java
 

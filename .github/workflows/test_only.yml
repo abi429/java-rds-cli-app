@@ -52,4 +52,4 @@ jobs:
         run: javac src/StudentApp.java
 
       - name: Run app (mock test)
-        run: java src StudentApp < test-input.txt
+        run: java src StudentApp < src/test-input.txt

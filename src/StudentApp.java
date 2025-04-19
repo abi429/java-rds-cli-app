@@ -7,6 +7,13 @@ public class StudentApp {
     private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
 
     public static void main(String[] args) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            createTableIfNotExists(conn);
+        } catch (SQLException e) {
+            System.err.println("Database connection error: " + e.getMessage());
+            return;
+        }
+
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -16,7 +23,7 @@ public class StudentApp {
             System.out.println("3. Exit");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline
+            scanner.nextLine(); // Consume newline
 
             switch (choice) {
                 case 1:
@@ -30,6 +37,17 @@ public class StudentApp {
                 default:
                     System.out.println("Invalid option.");
             }
+        }
+    }
+
+    private static void createTableIfNotExists(Connection conn) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS students (" +
+                     "id INT AUTO_INCREMENT PRIMARY KEY," +
+                     "name VARCHAR(100) NOT NULL," +
+                     "age INT NOT NULL" +
+                     ")";
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
         }
     }
 
@@ -68,4 +86,3 @@ public class StudentApp {
         }
     }
 }
-
